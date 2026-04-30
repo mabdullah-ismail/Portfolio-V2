@@ -9,27 +9,9 @@ import SplineScene from "@/components/SplineScene";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
   const lenisRef = useRef<Lenis | null>(null);
-  
-  useEffect(() => {
-    let currentProgress = 0;
-    const interval = setInterval(() => {
-      currentProgress += Math.random() * 15;
-      if (currentProgress >= 100) {
-        currentProgress = 100;
-        clearInterval(interval);
-        setTimeout(() => setLoaded(true), 500);
-      }
-      setProgress(currentProgress);
-    }, 200);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
-    if (!loaded) return;
-
     const lenis = new Lenis();
     lenisRef.current = lenis;
     (window as any).lenis = lenis;
@@ -64,7 +46,7 @@ export default function Home() {
         pin: true,
         scrub: 1,
         snap: 1 / (panels.length - 1),
-        end: () => "+=" + document.querySelector("#portfolio-container")?.offsetWidth
+        end: () => "+=" + (document.querySelector("#portfolio-container") as HTMLElement)?.offsetWidth
       }
     });
 
@@ -72,18 +54,10 @@ export default function Home() {
       lenis.destroy();
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
-  }, [loaded]);
+  }, []);
 
   return (
     <main className="relative bg-[#E5E5E5] text-[#0A0A0A] overflow-hidden">
-      {/* Preloader */}
-      <div className={`preloader ${loaded ? 'fade-out' : ''}`}>
-        <h1 className="font-display font-bold text-2xl tracking-widest uppercase">INITIALIZING</h1>
-        <div className="progress-container">
-          <div className="progress-bar" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
-
       {/* Fixed 3D Spline Background */}
       <div className="spline-container">
         <SplineScene />
