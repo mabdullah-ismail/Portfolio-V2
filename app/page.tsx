@@ -93,7 +93,7 @@ export default function Home() {
     const container = document.querySelector(".horizontal-scroll-container") as HTMLElement;
     
     if (container) {
-      const scrollTween = gsap.to(container, {
+      gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
         ease: "none",
         scrollTrigger: {
@@ -139,16 +139,10 @@ export default function Home() {
 
     const currentScroll = window.scrollY;
     const sectionTop = experienceSection.offsetTop;
-    const sectionHeight = experienceSection.offsetHeight; // This might be tricky because of pinning
 
-    // Simple implementation: if not in experience, go to experience
-    if (currentScroll < sectionTop - 100) {
-      lenisRef.current.scrollTo('#experience');
-    } else {
-      // Just scroll a bit more to trigger GSAP
-      const scrollAmount = window.innerHeight * 0.5;
-      lenisRef.current.scrollTo(currentScroll + (direction === 'next' ? scrollAmount : -scrollAmount), { lerp: 0.1 });
-    }
+    // Simple scroll adjustment to move through pinned section
+    const scrollAmount = window.innerHeight * 0.8;
+    lenisRef.current.scrollTo(currentScroll + (direction === 'next' ? scrollAmount : -scrollAmount));
   };
 
   return (
@@ -210,17 +204,22 @@ export default function Home() {
         <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
           <div className="horizontal-scroll-container flex gap-8 md:gap-16 px-[10vw] md:px-[20vw] items-center h-full w-max">
             {PROJECTS.map((project, index) => (
-              <a 
+              <div 
                 key={index}
-                href={project.link}
-                target="_blank"
-                rel="noreferrer"
                 className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[40vw] group"
               >
                 <div className="glass-card p-6 md:p-12 rounded-none border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/95 shadow-sm group-hover:shadow-xl">
                   <div className="flex justify-between items-start mb-4 md:mb-6">
                     <div className="font-display text-[8px] md:text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{project.role}</div>
-                    <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-[#0A0A0A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    <a 
+                      href={project.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-2 bg-black text-white hover:bg-[#333] transition-colors rounded-none"
+                      title="View Project"
+                    >
+                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
                   </div>
                   <h3 className="font-display text-2xl md:text-4xl font-bold mb-4 text-[#0A0A0A] leading-tight">{project.title}</h3>
                   <p className="text-sm md:text-base text-[#484848] mb-6 md:mb-8 leading-relaxed font-light line-clamp-4 md:line-clamp-none">{project.description}</p>
@@ -232,7 +231,7 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-              </a>
+              </div>
             ))}
           </div>
         </section>
@@ -261,25 +260,27 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Bottom Navigation Arrows */}
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 z-[60] pointer-events-auto">
-          <button 
-            onClick={() => handleNav('prev')}
-            className="w-12 h-12 bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-          </button>
-          <div className="font-display text-[10px] uppercase tracking-[0.3em] font-bold text-[#0A0A0A]">
-            {currentProject + 1} / {PROJECTS.length}
-          </button>
-          <button 
-            onClick={() => handleNav('next')}
-            className="w-12 h-12 bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-          </button>
-        </div>
+      </div>
 
+      {/* Bottom Navigation Arrows - Moved outside DOM overlay for better reliability */}
+      <div className="fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 md:gap-6 z-[100] pointer-events-auto">
+        <button 
+          onClick={() => handleNav('prev')}
+          className="w-10 h-10 md:w-12 md:h-12 bg-white/40 backdrop-blur-2xl border border-white/50 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl active:scale-95"
+          aria-label="Previous Project"
+        >
+          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+        </button>
+        <div className="font-display text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#0A0A0A] bg-white/20 backdrop-blur-md px-3 py-1">
+          {currentProject + 1} / {PROJECTS.length}
+        </div>
+        <button 
+          onClick={() => handleNav('next')}
+          className="w-10 h-10 md:w-12 md:h-12 bg-white/40 backdrop-blur-2xl border border-white/50 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl active:scale-95"
+          aria-label="Next Project"
+        >
+          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        </button>
       </div>
     </main>
   );
