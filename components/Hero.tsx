@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useTextScramble } from "@/hooks/useTextScramble";
 
 export default function Hero({ isReady }: { isReady: boolean }) {
   const [showContent, setShowContent] = useState(false);
   const name = "M. ABDULLAH";
 
-  const nameVariants = {
+  const nameVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -19,7 +19,7 @@ export default function Hero({ isReady }: { isReady: boolean }) {
     },
   };
 
-  const letterVariants = {
+  const letterVariants: Variants = {
     hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
     visible: {
       opacity: 1,
