@@ -25,7 +25,7 @@ export default function Home() {
     lenis.on('scroll', ScrollTrigger.update);
 
     // Hero Fade Out Animation
-    gsap.to(".hero-title", {
+    gsap.to(".hero-content", {
       scrollTrigger: {
         trigger: "#hero",
         start: "top top",
@@ -38,20 +38,22 @@ export default function Home() {
 
     // Horizontal Scroll for Portfolio (Experience)
     const panels = gsap.utils.toArray(".horizontal-panel");
-    const totalWidth = (panels.length - 1) * 100;
-
-    gsap.to(panels, {
-      xPercent: -totalWidth,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#experience",
-        pin: true,
-        scrub: 1,
-        snap: 1 / (panels.length - 1),
-        // Force the horizontal scroll to take longer (3x the viewport width)
-        end: () => "+=" + (window.innerWidth * 3),
-      }
-    });
+    const container = document.querySelector(".horizontal-scroll-container") as HTMLElement;
+    
+    if (container) {
+      gsap.to(container, {
+        x: () => -(container.scrollWidth - window.innerWidth),
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#experience",
+          pin: true,
+          scrub: 1,
+          // Force the horizontal scroll to take longer (2x the viewport width for 3 cards with small gaps)
+          end: () => "+=" + container.scrollWidth,
+          invalidateOnRefresh: true,
+        }
+      });
+    }
 
     // Reveal animations for text
     gsap.utils.toArray(".reveal-text").forEach((text: any) => {
@@ -86,7 +88,7 @@ export default function Home() {
         
         {/* Navigation / Header */}
         <header className="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-50 mix-blend-difference text-white">
-          <div className="font-display font-bold text-xl tracking-tight">ABDULLAH</div>
+          <div className="font-display font-bold text-xl tracking-tight uppercase">GENO</div>
           <div className="hidden md:flex gap-8 font-display text-sm uppercase tracking-widest">
             <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#about')}>About</span>
             <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#experience')}>Experience</span>
@@ -96,9 +98,14 @@ export default function Home() {
 
         {/* Hero Section */}
         <section id="hero" className="h-[100vh] flex flex-col items-center justify-center pointer-events-auto relative">
-          <h1 className="hero-title heading-massive text-center mix-blend-difference text-white pointer-events-none">
-            ABDULLAH
-          </h1>
+          <div className="hero-content text-center mix-blend-difference text-white pointer-events-none">
+            <h1 className="heading-massive">
+              ABDULLAH
+            </h1>
+            <p className="mt-4 font-display text-sm md:text-base tracking-[0.4em] uppercase opacity-80">
+              Redefining Digital Boundaries Through AI & Security
+            </p>
+          </div>
         </section>
 
         {/* About Section */}
@@ -126,9 +133,9 @@ export default function Home() {
 
         {/* Portfolio Horizontal Scroll Section (Experience) */}
         <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
-          <div className="horizontal-scroll-container">
-            <div className="horizontal-panel">
-              <div className="glass-card p-12 rounded-none max-w-2xl w-full mx-6 transform transition-transform hover:scale-[1.02] duration-500">
+          <div className="horizontal-scroll-container flex gap-12 px-[10vw] items-center h-full w-max">
+            <div className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[45vw]">
+              <div className="glass-card p-12 rounded-none transform transition-transform hover:scale-[1.02] duration-500">
                 <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">Cybersecurity / Intern</div>
                 <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">Arch Tech</h3>
                 <p className="text-lg text-[#484848] mb-6">Focusing on network security, vulnerability assessments, and Python-based automation scripts for digital defense.</p>
@@ -139,8 +146,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="horizontal-panel">
-              <div className="glass-card p-12 rounded-none max-w-2xl w-full mx-6 transform transition-transform hover:scale-[1.02] duration-500">
+            <div className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[45vw]">
+              <div className="glass-card p-12 rounded-none transform transition-transform hover:scale-[1.02] duration-500">
                 <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">Leadership / Google Dev</div>
                 <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">GDGoC BNU</h3>
                 <p className="text-lg text-[#484848] mb-6">Lead of Media & Coverage. Managing video production and social marketing for the Google Developer Groups community.</p>
@@ -151,8 +158,8 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="horizontal-panel">
-              <div className="glass-card p-12 rounded-none max-w-2xl w-full mx-6 transform transition-transform hover:scale-[1.02] duration-500">
+            <div className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[45vw]">
+              <div className="glass-card p-12 rounded-none transform transition-transform hover:scale-[1.02] duration-500">
                 <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">Game Dev / Intern</div>
                 <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">OZI Publishing</h3>
                 <p className="text-lg text-[#484848] mb-6">Developed 3D simulations and Hyper-Casual Android games. Specialized in level design and Unity core logic.</p>
@@ -186,7 +193,7 @@ export default function Home() {
               </div>
             </div>
             
-            <p className="mt-12 text-[#999] font-display text-xs uppercase tracking-widest">© 2026 Abdullah. Robotic Precision Design.</p>
+            <p className="mt-12 text-[#999] font-display text-xs uppercase tracking-widest">© 2026 GENO. Robotic Precision Design.</p>
           </div>
         </section>
 
