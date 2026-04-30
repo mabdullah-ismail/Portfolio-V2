@@ -8,6 +8,58 @@ import SplineScene from "@/components/SplineScene";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const PROJECTS = [
+  {
+    title: "EcoScan",
+    role: "Co-Founder / Startup",
+    description: "Secured 4th Position at Shelby Stack. A sustainable tech solution focused on environmental impact and vision for green innovation.",
+    tags: ["Sustainable Tech", "AI", "Startup"],
+    link: "https://ecoscan-pk.web.app"
+  },
+  {
+    title: "Raise The Voice",
+    role: "Unified Data Platform",
+    description: "A community engagement initiative connecting Pakistan's law enforcement and judiciary for transparency and justice.",
+    tags: ["Data Platform", "Social Impact", "DBMS"],
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/details/projects/"
+  },
+  {
+    title: "Arch Tech",
+    role: "Cybersecurity / Intern",
+    description: "Focusing on network security, vulnerability assessments, and Python-based automation scripts for digital defense.",
+    tags: ["Python", "Kali Linux", "Security"],
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/"
+  },
+  {
+    title: "GDGoC BNU",
+    role: "Leadership / Google Dev",
+    description: "Lead of Media & Coverage. Managing video production and social marketing for the Google Developer Groups community.",
+    tags: ["Media", "Leadership", "Community"],
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/"
+  },
+  {
+    title: "OZI Publishing",
+    role: "Game Dev / Intern",
+    description: "Developed 3D simulations and Hyper-Casual Android games. Specialized in level design and Unity core logic.",
+    tags: ["Unity", "C#", "Game Dev"],
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/"
+  },
+  {
+    title: "SCIT Management",
+    role: "Software Engineering",
+    description: "A C++ & MySQL based University Management System streamlining academic operations through role-based access.",
+    tags: ["C++", "MySQL", "OOP"],
+    link: "https://github.com/mabdullah-ismail"
+  },
+  {
+    title: "ArcadeHub",
+    role: "C++ Game Console",
+    description: "Multi-game console featuring GeoGuesser, Problem Solver, and Hangman with dynamic leaderboards and file handling.",
+    tags: ["C++", "Game Logic", "STL"],
+    link: "https://github.com/mabdullah-ismail/Arcade-Hub"
+  }
+];
+
 export default function Home() {
   const lenisRef = useRef<Lenis | null>(null);
   
@@ -37,7 +89,6 @@ export default function Home() {
     });
 
     // Horizontal Scroll for Portfolio (Experience)
-    const panels = gsap.utils.toArray(".horizontal-panel");
     const container = document.querySelector(".horizontal-scroll-container") as HTMLElement;
     
     if (container) {
@@ -48,7 +99,6 @@ export default function Home() {
           trigger: "#experience",
           pin: true,
           scrub: 1,
-          // Force the horizontal scroll to take longer (2x the viewport width for 3 cards with small gaps)
           end: () => "+=" + container.scrollWidth,
           invalidateOnRefresh: true,
         }
@@ -77,7 +127,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative bg-[#E5E5E5] text-[#0A0A0A] overflow-hidden">
+    <main className="relative bg-[#E5E5E5] text-[#0A0A0A] overflow-hidden font-sans">
       {/* Fixed 3D Spline Background */}
       <div className="spline-container">
         <SplineScene />
@@ -91,7 +141,7 @@ export default function Home() {
           <div className="font-display font-bold text-xl tracking-tight uppercase">GENO</div>
           <div className="hidden md:flex gap-8 font-display text-sm uppercase tracking-widest">
             <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#about')}>About</span>
-            <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#experience')}>Experience</span>
+            <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#experience')}>Work</span>
             <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#contact')}>Contact</span>
           </div>
         </header>
@@ -119,7 +169,7 @@ export default function Home() {
             </p>
             <div className="mt-12 flex flex-wrap gap-4">
               <button className="btn-primary" onClick={() => (window as any).lenis?.scrollTo('#experience')}>
-                Experience
+                View Projects
               </button>
               <a href="https://linkedin.com/in/muhammad-abdullah-ismail/" target="_blank" rel="noreferrer" className="btn-outlined">
                 LinkedIn
@@ -131,45 +181,34 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Portfolio Horizontal Scroll Section (Experience) */}
+        {/* Projects Horizontal Scroll Section */}
         <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
           <div className="horizontal-scroll-container flex gap-12 px-[10vw] items-center h-full w-max">
-            <div className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[45vw]">
-              <div className="glass-card p-12 rounded-none transform transition-transform hover:scale-[1.02] duration-500">
-                <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">Cybersecurity / Intern</div>
-                <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">Arch Tech</h3>
-                <p className="text-lg text-[#484848] mb-6">Focusing on network security, vulnerability assessments, and Python-based automation scripts for digital defense.</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Python</span>
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Kali Linux</span>
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Security</span>
+            {PROJECTS.map((project, index) => (
+              <a 
+                key={index}
+                href={project.link}
+                target="_blank"
+                rel="noreferrer"
+                className="horizontal-panel flex-shrink-0 w-[85vw] md:w-[45vw] group"
+              >
+                <div className="glass-card p-10 md:p-12 rounded-none h-full border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/90">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="font-display text-sm text-[#484848] uppercase tracking-widest">{project.role}</div>
+                    <svg className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  </div>
+                  <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A] group-hover:tracking-tight transition-all">{project.title}</h3>
+                  <p className="text-lg text-[#484848] mb-8 leading-relaxed">{project.description}</p>
+                  <div className="flex flex-wrap gap-3">
+                    {project.tags.map((tag, i) => (
+                      <span key={i} className="px-3 py-1 border border-[#ccc] text-[10px] uppercase tracking-[0.2em] text-[#666] font-display">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[45vw]">
-              <div className="glass-card p-12 rounded-none transform transition-transform hover:scale-[1.02] duration-500">
-                <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">Leadership / Google Dev</div>
-                <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">GDGoC BNU</h3>
-                <p className="text-lg text-[#484848] mb-6">Lead of Media & Coverage. Managing video production and social marketing for the Google Developer Groups community.</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Media</span>
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Leadership</span>
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Community</span>
-                </div>
-              </div>
-            </div>
-            <div className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[45vw]">
-              <div className="glass-card p-12 rounded-none transform transition-transform hover:scale-[1.02] duration-500">
-                <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">Game Dev / Intern</div>
-                <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">OZI Publishing</h3>
-                <p className="text-lg text-[#484848] mb-6">Developed 3D simulations and Hyper-Casual Android games. Specialized in level design and Unity core logic.</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Unity</span>
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">C#</span>
-                  <span className="px-3 py-1 border border-[#ccc] text-xs uppercase tracking-widest">Game Dev</span>
-                </div>
-              </div>
-            </div>
+              </a>
+            ))}
           </div>
         </section>
 
