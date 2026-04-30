@@ -95,30 +95,27 @@ export default function Home() {
     const container = document.querySelector(".horizontal-scroll-container") as HTMLElement;
     
     if (container) {
-      const st = ScrollTrigger.create({
-        trigger: "#experience",
-        pin: true,
-        scrub: 1,
-        start: "top top",
-        end: () => "+=" + container.scrollWidth,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const index = Math.round(progress * (PROJECTS.length - 1));
-          setCurrentProject(index);
-        },
-        onToggle: (self) => {
-          setIsNavVisible(self.isActive);
-        }
-      });
-
-      scrollTriggerRef.current = st;
-
-      gsap.to(container, {
+      const scrollTween = gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
         ease: "none",
-        scrollTrigger: st
+        scrollTrigger: {
+          trigger: "#experience",
+          pin: true,
+          scrub: 1,
+          start: "top top",
+          end: () => "+=" + container.scrollWidth,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            const progress = self.progress;
+            const index = Math.round(progress * (PROJECTS.length - 1));
+            setCurrentProject(index);
+          },
+          onToggle: (self) => {
+            setIsNavVisible(self.isActive);
+          }
+        }
       });
+      scrollTriggerRef.current = scrollTween.scrollTrigger!;
     }
 
     // Reveal animations for text
@@ -149,20 +146,17 @@ export default function Home() {
       ? Math.min(currentProject + 1, PROJECTS.length - 1)
       : Math.max(currentProject - 1, 0);
     
-    if (nextIndex === currentProject) return;
-
     const st = scrollTriggerRef.current;
     const start = st.start;
     const end = st.end;
     const totalScroll = end - start;
     
-    // Calculate progress for the next index
     const targetProgress = nextIndex / (PROJECTS.length - 1);
     const targetScroll = start + (targetProgress * totalScroll);
     
     lenisRef.current.scrollTo(targetScroll, { 
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 * Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 4.5)) + 1) // elastic ease
+      duration: 1,
+      easing: (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t) // Expo Out
     });
   };
 
@@ -223,7 +217,7 @@ export default function Home() {
 
         {/* Projects Horizontal Scroll Section */}
         <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
-          <div className="horizontal-scroll-container flex gap-8 md:gap-16 px-[10vw] md:px-[20vw] items-center h-full w-max">
+          <div className="horizontal-scroll-container flex gap-8 md:gap-16 px-[10vw] md:px-[20vw] items-center h-full w-max opacity-100">
             {PROJECTS.map((project, index) => (
               <div 
                 key={index}
@@ -236,7 +230,7 @@ export default function Home() {
                       href={project.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="p-2 bg-black text-white hover:bg-[#333] transition-colors rounded-none"
+                      className="p-2 bg-black text-white hover:bg-[#333] transition-colors rounded-none pointer-events-auto"
                       title="View Project"
                     >
                       <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
