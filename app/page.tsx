@@ -183,24 +183,22 @@ export default function Home() {
 
         {/* Projects Horizontal Scroll Section */}
         <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
-          <div className="horizontal-scroll-container flex gap-16 px-[15vw] items-center h-full w-max">
+          <div className="horizontal-scroll-container flex gap-16 px-[20vw] items-center h-full w-max">
             {PROJECTS.map((project, index) => (
               <a 
                 key={index}
                 href={project.link}
                 target="_blank"
                 rel="noreferrer"
-                className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[35vw] group"
+                className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[40vw] group"
               >
-                <div className="glass-card p-10 md:p-12 rounded-none h-full border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/95 shadow-sm group-hover:shadow-xl flex flex-col justify-between">
-                  <div>
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="font-display text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{project.role}</div>
-                      <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-[#0A0A0A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                    </div>
-                    <h3 className="font-display text-3xl md:text-4xl font-bold mb-6 text-[#0A0A0A] leading-tight">{project.title}</h3>
-                    <p className="text-base text-[#484848] mb-8 leading-relaxed font-light">{project.description}</p>
+                <div className="glass-card p-8 md:p-12 rounded-none border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/95 shadow-sm group-hover:shadow-xl">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="font-display text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{project.role}</div>
+                    <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-[#0A0A0A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                   </div>
+                  <h3 className="font-display text-3xl md:text-4xl font-bold mb-4 text-[#0A0A0A] leading-tight">{project.title}</h3>
+                  <p className="text-base text-[#484848] mb-8 leading-relaxed font-light">{project.description}</p>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag, i) => (
                       <span key={i} className="px-3 py-1 border border-[#ddd] text-[9px] uppercase tracking-[0.1em] text-[#888] font-display font-medium">
