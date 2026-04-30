@@ -62,7 +62,9 @@ const PROJECTS = [
 
 export default function Home() {
   const lenisRef = useRef<Lenis | null>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
   const [currentProject, setCurrentProject] = useState(0);
+  const [isNavVisible, setIsNavVisible] = useState(false);
   
   useEffect(() => {
     const lenis = new Lenis();
@@ -93,21 +95,29 @@ export default function Home() {
     const container = document.querySelector(".horizontal-scroll-container") as HTMLElement;
     
     if (container) {
+      const st = ScrollTrigger.create({
+        trigger: "#experience",
+        pin: true,
+        scrub: 1,
+        start: "top top",
+        end: () => "+=" + container.scrollWidth,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const index = Math.round(progress * (PROJECTS.length - 1));
+          setCurrentProject(index);
+        },
+        onToggle: (self) => {
+          setIsNavVisible(self.isActive);
+        }
+      });
+
+      scrollTriggerRef.current = st;
+
       gsap.to(container, {
         x: () => -(container.scrollWidth - window.innerWidth),
         ease: "none",
-        scrollTrigger: {
-          trigger: "#experience",
-          pin: true,
-          scrub: 1,
-          end: () => "+=" + container.scrollWidth,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const index = Math.round(progress * (PROJECTS.length - 1));
-            setCurrentProject(index);
-          }
-        }
+        scrollTrigger: st
       });
     }
 
@@ -133,16 +143,27 @@ export default function Home() {
   }, []);
 
   const handleNav = (direction: 'prev' | 'next') => {
-    if (!lenisRef.current) return;
-    const experienceSection = document.querySelector("#experience") as HTMLElement;
-    if (!experienceSection) return;
+    if (!lenisRef.current || !scrollTriggerRef.current) return;
+    
+    const nextIndex = direction === 'next' 
+      ? Math.min(currentProject + 1, PROJECTS.length - 1)
+      : Math.max(currentProject - 1, 0);
+    
+    if (nextIndex === currentProject) return;
 
-    const currentScroll = window.scrollY;
-    const sectionTop = experienceSection.offsetTop;
-
-    // Simple scroll adjustment to move through pinned section
-    const scrollAmount = window.innerHeight * 0.8;
-    lenisRef.current.scrollTo(currentScroll + (direction === 'next' ? scrollAmount : -scrollAmount));
+    const st = scrollTriggerRef.current;
+    const start = st.start;
+    const end = st.end;
+    const totalScroll = end - start;
+    
+    // Calculate progress for the next index
+    const targetProgress = nextIndex / (PROJECTS.length - 1);
+    const targetScroll = start + (targetProgress * totalScroll);
+    
+    lenisRef.current.scrollTo(targetScroll, { 
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 * Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 4.5)) + 1) // elastic ease
+    });
   };
 
   return (
@@ -262,8 +283,8 @@ export default function Home() {
 
       </div>
 
-      {/* Bottom Navigation Arrows - Moved outside DOM overlay for better reliability */}
-      <div className="fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 md:gap-6 z-[100] pointer-events-auto">
+      {/* Bottom Navigation Arrows */}
+      <div className={`fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 md:gap-6 z-[100] transition-all duration-500 pointer-events-auto ${isNavVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
         <button 
           onClick={() => handleNav('prev')}
           className="w-10 h-10 md:w-12 md:h-12 bg-white/40 backdrop-blur-2xl border border-white/50 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl active:scale-95"
