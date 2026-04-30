@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "An immersive 3D portfolio experience featuring Robotic Precision and Minimalist Design. Cybersecurity enthusiast and Game Developer.",
   icons: {
-    icon: "/icon.jpg",
+    icon: "/icon.png",
   },
   keywords: [
     "portfolio",
