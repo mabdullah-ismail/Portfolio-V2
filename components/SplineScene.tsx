@@ -7,8 +7,8 @@ const SplineScene = forwardRef<any, { onLoad?: (spline: any) => void }>(({ onLoa
   return (
     <div className="spline-container">
       <Suspense fallback={
-        <div className="w-full h-full bg-black flex items-center justify-center text-cyan-500 font-mono animate-pulse">
-          LINKING TO NEURAL MESH...
+        <div className="w-full h-full bg-[#E5E5E5] flex items-center justify-center text-[#0A0A0A] font-display animate-pulse tracking-widest text-sm uppercase">
+          Loading 3D Core...
         </div>
       }>
         <Spline
