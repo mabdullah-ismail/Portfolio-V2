@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 const PROJECTS = [
   {
     title: "EcoScan",
-    role: "Co-Founder / Startup",
+    role: "Founder / CEO",
     description: "Secured 4th Position at Shelby Stack. A sustainable tech solution focused on environmental impact and vision for green innovation.",
     tags: ["Sustainable Tech", "AI", "Startup"],
     link: "https://ecoscan-pk.web.app"
@@ -183,25 +183,25 @@ export default function Home() {
 
         {/* Projects Horizontal Scroll Section */}
         <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
-          <div className="horizontal-scroll-container flex gap-12 px-[10vw] items-center h-full w-max">
+          <div className="horizontal-scroll-container flex gap-16 px-[15vw] items-center h-full w-max">
             {PROJECTS.map((project, index) => (
               <a 
                 key={index}
                 href={project.link}
                 target="_blank"
                 rel="noreferrer"
-                className="horizontal-panel flex-shrink-0 w-[85vw] md:w-[45vw] group"
+                className="horizontal-panel flex-shrink-0 w-[300px] md:w-[400px] h-[500px] group"
               >
-                <div className="glass-card p-10 md:p-12 rounded-none h-full border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/90">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="font-display text-sm text-[#484848] uppercase tracking-widest">{project.role}</div>
-                    <svg className="w-5 h-5 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                <div className="glass-card p-10 h-full flex flex-col border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/90">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="font-display text-[10px] text-[#484848] uppercase tracking-[0.2em]">{project.role}</div>
+                    <svg className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                   </div>
-                  <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A] group-hover:tracking-tight transition-all">{project.title}</h3>
-                  <p className="text-lg text-[#484848] mb-8 leading-relaxed">{project.description}</p>
-                  <div className="flex flex-wrap gap-3">
+                  <h3 className="font-display text-3xl font-bold mb-4 text-[#0A0A0A] group-hover:tracking-tight transition-all">{project.title}</h3>
+                  <p className="text-sm text-[#484848] mb-auto leading-relaxed overflow-hidden line-clamp-6">{project.description}</p>
+                  <div className="mt-8 flex flex-wrap gap-2">
                     {project.tags.map((tag, i) => (
-                      <span key={i} className="px-3 py-1 border border-[#ccc] text-[10px] uppercase tracking-[0.2em] text-[#666] font-display">
+                      <span key={i} className="px-2 py-1 border border-[#ccc] text-[9px] uppercase tracking-widest text-[#666] font-display">
                         {tag}
                       </span>
                     ))}
