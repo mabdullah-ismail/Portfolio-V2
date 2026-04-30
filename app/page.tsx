@@ -113,8 +113,10 @@ export default function Home() {
 
   return (
     <main className="relative min-h-[100svh]">
-      {/* Glitch Overlay */}
-      <GlitchOverlay />
+      {/* Glitch Overlay - Desktop Only */}
+      <div className="hidden md:block">
+        <GlitchOverlay />
+      </div>
 
       {/* 3D Background Layer */}
       <div 
@@ -133,8 +135,10 @@ export default function Home() {
       {/* Boot screen */}
       {showBoot && <BootScreen onComplete={handleBootComplete} />}
 
-      {/* CRT overlay */}
-      <CRTOverlay />
+      {/* CRT overlay - Desktop Only */}
+      <div className="hidden md:block">
+        <CRTOverlay />
+      </div>
 
       {/* Custom cursor (desktop only) */}
       <MagneticCursor />

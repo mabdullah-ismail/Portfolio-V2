@@ -146,8 +146,10 @@ body {
 }
 
 /* Subtle chromatic aberration on the whole page */
-.chromatic-aberration {
-  animation: chromaticShift 8s ease-in-out infinite;
+@media (min-width: 768px) {
+  .chromatic-aberration {
+    animation: chromaticShift 8s ease-in-out infinite;
+  }
 }
 
 @keyframes chromaticShift {
