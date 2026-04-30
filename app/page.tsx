@@ -270,8 +270,6 @@ export default function Home() {
                 </a>
               </div>
             </div>
-            
-            <p className="mt-8 md:mt-12 text-[#999] font-display text-[10px] uppercase tracking-widest text-center">© 2026 GENO. Robotic Precision Design.</p>
           </div>
         </section>
 
