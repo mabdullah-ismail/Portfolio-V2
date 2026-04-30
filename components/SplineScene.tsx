@@ -12,7 +12,7 @@ const SplineScene = forwardRef<any, { onLoad?: (spline: any) => void }>(({ onLoa
         </div>
       }>
         <Spline
-          scene="https://prod.spline.design/ozPyac-j4wcgYmwu/scene.splinecode"
+          scene="https://prod.spline.design/CZ5FWh4w2dkU889E/scene.splinecode"
           onLoad={onLoad}
         />
       </Suspense>
