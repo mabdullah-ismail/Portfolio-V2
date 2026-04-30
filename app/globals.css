@@ -139,14 +139,26 @@ body {
 /* Horizontal Scroll Container */
 .horizontal-scroll-container {
   display: flex;
-  width: 300vw; /* 3 panels */
   height: 100vh;
 }
 
 .horizontal-panel {
-  width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+/* Hide Spline Attribution Badge */
+#logo {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Hard reset for favicon cache if needed */
+link[rel="icon"] {
+  display: none;
+}
+
