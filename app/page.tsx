@@ -79,17 +79,23 @@ export default function Home() {
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    // Attempt to remove Spline Badge via DOM observer (aggressive)
-    const observer = new MutationObserver(() => {
-      const splineBadge = document.querySelector('a[href*="spline.design"]');
-      if (splineBadge) {
-        (splineBadge as HTMLElement).style.display = 'none';
-        (splineBadge as HTMLElement).style.opacity = '0';
-        (splineBadge as HTMLElement).style.visibility = 'hidden';
-      }
-    });
+    // Deep-Search for Spline Badge (including Shadow DOM)
+    const nukeSpline = () => {
+      // 1. Check Light DOM
+      const lightBadges = document.querySelectorAll('a[href*="spline.design"], #spline-badge, .spline-watermark');
+      lightBadges.forEach(b => (b as HTMLElement).remove());
 
-    observer.observe(document.body, { childList: true, subtree: true });
+      // 2. Check Shadow DOMs
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach(el => {
+        if (el.shadowRoot) {
+          const shadowBadge = el.shadowRoot.querySelector('a[href*="spline.design"], #spline-badge');
+          if (shadowBadge) (shadowBadge as HTMLElement).remove();
+        }
+      });
+    };
+
+    const interval = setInterval(nukeSpline, 500);
 
     // Hero Fade Out Animation
     gsap.to(".hero-content", {
@@ -148,7 +154,7 @@ export default function Home() {
     return () => {
       lenis.destroy();
       ScrollTrigger.getAll().forEach(t => t.kill());
-      observer.disconnect();
+      clearInterval(interval);
     };
   }, []);
 
@@ -236,7 +242,7 @@ export default function Home() {
                 key={index}
                 className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[40vw] group"
               >
-                <div className="glass-card p-6 md:p-12 rounded-none border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/95 shadow-sm group-hover:shadow-xl min-h-[300px] md:min-h-0">
+                <div className="glass-card p-6 md:p-12 rounded-none border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/95 shadow-sm group-hover:shadow-xl min-h-[350px] md:min-h-0">
                   <div className="flex justify-between items-start mb-4 md:mb-6">
                     <div className="font-display text-[8px] md:text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{project.role}</div>
                     <a 
