@@ -13,7 +13,6 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const lenisRef = useRef<Lenis | null>(null);
   
-  // Custom preloader simulation since Spline onLoad doesn't give precise %
   useEffect(() => {
     let currentProgress = 0;
     const interval = setInterval(() => {
@@ -28,11 +27,9 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Smooth Scroll & GSAP setup
   useEffect(() => {
     if (!loaded) return;
 
-    // Smooth Scroll
     const lenis = new Lenis();
     lenisRef.current = lenis;
     (window as any).lenis = lenis;
@@ -77,17 +74,11 @@ export default function Home() {
     };
   }, [loaded]);
 
-  const onSplineLoad = (splineApp: any) => {
-    console.log("Spline loaded", splineApp);
-    // Ideally we would link GSAP to Spline camera here, but without knowing the exact object names
-    // in the Spline file (like 'Camera 2'), we rely on Spline's built-in interactivity for now.
-  };
-
   return (
-    <main className="relative bg-[#E3E3E3] text-[#111] overflow-hidden">
+    <main className="relative bg-[#E5E5E5] text-[#0A0A0A] overflow-hidden">
       {/* Preloader */}
       <div className={`preloader ${loaded ? 'fade-out' : ''}`}>
-        <h1 className="font-bold text-2xl tracking-widest uppercase">INITIALIZING NABOT</h1>
+        <h1 className="font-display font-bold text-2xl tracking-widest uppercase">INITIALIZING</h1>
         <div className="progress-container">
           <div className="progress-bar" style={{ width: `${progress}%` }} />
         </div>
@@ -95,30 +86,45 @@ export default function Home() {
 
       {/* Fixed 3D Spline Background */}
       <div className="spline-container">
-        <SplineScene onLoad={onSplineLoad} />
+        <SplineScene />
       </div>
 
       {/* DOM Overlay Content */}
       <div className="relative z-10 pointer-events-none">
         
+        {/* Navigation / Header */}
+        <header className="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-50 mix-blend-difference text-white">
+          <div className="font-display font-bold text-xl tracking-tight">ABDULLAH</div>
+          <div className="hidden md:flex gap-8 font-display text-sm uppercase tracking-widest">
+            <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#about')}>About</span>
+            <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#portfolio-container')}>Work</span>
+            <span className="cursor-pointer hover:opacity-50 transition-opacity pointer-events-auto" onClick={() => (window as any).lenis?.scrollTo('#contact')}>Contact</span>
+          </div>
+        </header>
+
         {/* Hero Section */}
-        <section id="hero" className="h-[100vh] flex flex-col items-center justify-center pointer-events-auto">
-          <h1 className="hero-title heading-massive text-center mix-blend-difference text-white">
-            NABOT
+        <section id="hero" className="h-[100vh] flex flex-col items-center justify-center pointer-events-auto relative">
+          <h1 className="hero-title heading-massive text-center mix-blend-difference text-white pointer-events-none">
+            ABDULLAH
           </h1>
-          <p className="hero-title mt-4 text-sm uppercase tracking-widest text-center mix-blend-difference text-white">
-            SCROLL TO EXPLORE
-          </p>
         </section>
 
         {/* About Section */}
         <section id="about" className="min-h-[100vh] flex items-center section-padding pointer-events-auto">
-          <div className="max-w-2xl bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl">
-            <h2 className="text-4xl font-bold mb-6 tracking-tight">About Me</h2>
-            <p className="text-lg leading-relaxed text-gray-700">
-              I am M. Abdullah. Exploring the intersection of AI Automation, Game Development, and Cyber Security. 
-              This digital space represents my transition from pure cyberpunk aesthetics to minimalist, functional 3D scrollytelling.
+          <div className="max-w-3xl glass-card p-12 md:p-16">
+            <h2 className="font-display text-5xl md:text-6xl font-bold mb-8 text-[#0A0A0A]">About.</h2>
+            <p className="text-xl md:text-2xl leading-relaxed text-[#484848] font-light">
+              I am Abdullah. Exploring the intersection of AI Automation, Game Development, and Cyber Security. 
+              This digital space is built on the principles of minimal futurism and robotic precision.
             </p>
+            <div className="mt-12 flex gap-4">
+              <button className="btn-primary" onClick={() => (window as any).lenis?.scrollTo('#portfolio-container')}>
+                View Work
+              </button>
+              <a href="https://linkedin.com/in/muhammad-abdullah-ismail/" target="_blank" rel="noreferrer" className="btn-outlined">
+                LinkedIn
+              </a>
+            </div>
           </div>
         </section>
 
@@ -126,32 +132,35 @@ export default function Home() {
         <section id="portfolio-container" className="h-[100vh] pointer-events-auto overflow-hidden">
           <div className="horizontal-scroll-container">
             <div className="horizontal-panel">
-              <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl max-w-xl">
-                <h3 className="text-3xl font-bold mb-4">Project 01</h3>
-                <p>AI Automation Engine.</p>
+              <div className="glass-card p-12 rounded-none max-w-2xl w-full mx-6">
+                <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">01 / Project</div>
+                <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">AI Automation Engine</h3>
+                <p className="text-lg text-[#484848]">Automated intelligent workflows replacing redundant manual operations with precision AI.</p>
               </div>
             </div>
             <div className="horizontal-panel">
-              <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl max-w-xl">
-                <h3 className="text-3xl font-bold mb-4">Project 02</h3>
-                <p>Cyber Security Framework.</p>
+              <div className="glass-card p-12 rounded-none max-w-2xl w-full mx-6">
+                <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">02 / Project</div>
+                <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">Cyber Security Framework</h3>
+                <p className="text-lg text-[#484848]">Advanced penetration testing protocols and vulnerability assessment algorithms.</p>
               </div>
             </div>
             <div className="horizontal-panel">
-              <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl max-w-xl">
-                <h3 className="text-3xl font-bold mb-4">Project 03</h3>
-                <p>Game Dev Physics Engine.</p>
+              <div className="glass-card p-12 rounded-none max-w-2xl w-full mx-6">
+                <div className="font-display text-sm text-[#484848] uppercase tracking-widest mb-4">03 / Project</div>
+                <h3 className="font-display text-4xl md:text-5xl font-bold mb-6 text-[#0A0A0A]">Game Dev Physics Engine</h3>
+                <p className="text-lg text-[#484848]">Custom highly-optimized rigid body dynamics built specifically for real-time web experiences.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="h-[100vh] flex items-center justify-center section-padding pointer-events-auto">
-          <div className="text-center bg-white/80 backdrop-blur-md p-12 rounded-3xl shadow-xl max-w-xl">
-            <h2 className="text-5xl font-bold mb-6 tracking-tight">Let's Talk</h2>
-            <p className="text-gray-600 mb-8">Ready to build the future?</p>
-            <a href="mailto:abdullahismail249@yahoo.com" className="inline-block bg-black text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition-transform">
+        <section id="contact" className="h-[100vh] flex flex-col items-center justify-center section-padding pointer-events-auto">
+          <div className="text-center glass-card p-16 w-full max-w-4xl">
+            <h2 className="font-display text-6xl md:text-8xl font-bold mb-8 text-[#0A0A0A] tracking-tighter">Contact.</h2>
+            <p className="text-xl text-[#484848] mb-12 max-w-lg mx-auto">Available for freelance opportunities and long-term robotic precision projects.</p>
+            <a href="mailto:abdullahismail249@yahoo.com" className="btn-primary text-lg px-10 py-5">
               abdullahismail249@yahoo.com
             </a>
           </div>
