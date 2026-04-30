@@ -121,7 +121,7 @@ export default function Hero({ isReady }: { isReady: boolean }) {
                 textShadow: "10px 10px 0px rgba(0, 240, 255, 0.5), -10px -10px 0px rgba(255, 0, 85, 0.5)",
                 skewX: -10,
                 transition: { type: "spring", stiffness: 400, damping: 10 }
-              }}
+              } as any}
               className="inline-block cursor-crosshair"
               style={{
                 textShadow: "0 0 15px rgba(0, 240, 255, 0.4)",
