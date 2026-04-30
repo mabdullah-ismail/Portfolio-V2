@@ -10,7 +10,7 @@ const ACHIEVEMENTS = [
     date: "MAR 2026 — PRESENT",
     description: "Remote internship focusing on network security, vulnerability assessments, and Python-based automation scripts.",
     tags: ["Cybersecurity", "Python", "Kali Linux"],
-    icon: "🛡️",
+    icon: "",
     color: "var(--neon-green)",
   },
   {
@@ -18,7 +18,7 @@ const ACHIEVEMENTS = [
     date: "APR 2026 — PRESENT",
     description: "Leading the media team for Google Developer Groups on Campus. Managing video production and social media marketing.",
     tags: ["Media", "Video Editing", "Leadership"],
-    icon: "🎥",
+    icon: "",
     color: "var(--neon-amber)",
   },
   {
@@ -26,7 +26,7 @@ const ACHIEVEMENTS = [
     date: "JUL 2025 — SEP 2025",
     description: "Developed 3D simulations and Hyper-Casual Android games. Focused extensively on level design and core game logic.",
     tags: ["Unity", "C#", "Level Design"],
-    icon: "🎮",
+    icon: "",
     color: "var(--neon-magenta)",
   },
   {
@@ -34,7 +34,7 @@ const ACHIEVEMENTS = [
     date: "2024 — PRESENT",
     description: "Directorate General at BTECH Fest, Head of Logistics for SCITECH Society, and Co-Head of Events at Confiniti BNU.",
     tags: ["Management", "Logistics", "Community"],
-    icon: "⚡",
+    icon: "",
     color: "var(--neon-cyan)",
   },
 ];

@@ -6,11 +6,29 @@ import { useTextScramble } from "@/hooks/useTextScramble";
 
 export default function Hero({ isReady }: { isReady: boolean }) {
   const [showContent, setShowContent] = useState(false);
-  const { displayText: titleText } = useTextScramble("M. ABDULLAH", {
-    speed: 40,
-    delay: 300,
-    trigger: showContent,
-  });
+  const name = "M. ABDULLAH";
+
+  const nameVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 40, filter: "blur(10px)" },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: "blur(0px)",
+      transition: { type: "spring", damping: 12, stiffness: 200 },
+    },
+  };
+
   const { displayText: subtitleText } = useTextScramble(
     "AI AUTOMATION // GAME DEV // CYBER SECURITY",
     { speed: 20, delay: 800, trigger: showContent }
@@ -84,14 +102,35 @@ export default function Hero({ isReady }: { isReady: boolean }) {
 
         {/* Title */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] mb-6 glitch-text"
+          variants={nameVariants}
+          initial="hidden"
+          animate={showContent ? "visible" : "hidden"}
+          className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] mb-6 flex justify-center whitespace-nowrap"
           style={{ color: "var(--neon-cyan)" }}
-          data-text={titleText}
         >
-          {titleText}
+          {name.split("").map((char, index) => (
+            <motion.span
+              key={index}
+              variants={letterVariants}
+              whileHover={{
+                scaleY: 1.4,
+                scaleX: 0.9,
+                y: -15,
+                color: "transparent",
+                WebkitTextStroke: "2px var(--neon-magenta)",
+                textShadow: "10px 10px 0px rgba(0, 240, 255, 0.5), -10px -10px 0px rgba(255, 0, 85, 0.5)",
+                skewX: -10,
+                transition: { type: "spring", stiffness: 400, damping: 10 }
+              }}
+              className="inline-block cursor-crosshair"
+              style={{
+                textShadow: "0 0 15px rgba(0, 240, 255, 0.4)",
+                transformOrigin: "bottom",
+              }}
+            >
+              {char === " " ? "\u00A0" : char}
+            </motion.span>
+          ))}
         </motion.h1>
 
         {/* Version tag */}

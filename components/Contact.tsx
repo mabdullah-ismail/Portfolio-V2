@@ -5,7 +5,14 @@ import { motion } from "framer-motion";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { useInView } from "@/hooks/useInView";
 
-const SOCIAL_LINKS = [
+type SocialLink = {
+  label: string;
+  href?: string;
+  value?: string;
+  icon: string;
+};
+
+const SOCIAL_LINKS: SocialLink[] = [
   { label: "GitHub", href: "https://github.com/mabdullah-ismail", icon: "⬡" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/muhammad-abdullah-ismail/", icon: "◈" },
   { label: "Instagram", href: "https://instagram.com/abdxllaxh", icon: "◇" },

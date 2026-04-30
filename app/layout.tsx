@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "M. ABDULLAH | Cyberpunk Portfolio Terminal",
+  title: "M. ABDULLAH | Portfolio",
   description:
     "An immersive cyberpunk 3D portfolio experience. Game Developer and Cybersecurity enthusiast terminal featuring interactive projects, skills, and achievements.",
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "M. ABDULLAH" }],
   openGraph: {
-    title: "M. ABDULLAH | Cyberpunk Portfolio Terminal",
+    title: "M. ABDULLAH | Portfolio",
     description:
       "An immersive cyberpunk 3D portfolio experience.",
     type: "website",
