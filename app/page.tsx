@@ -1,60 +1,36 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import SplineScene from "@/components/SplineScene";
 
-// Register GSAP plugins
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
-
-// Dynamic imports for code splitting
-const BootScreen = dynamic(() => import("@/components/BootScreen"), { ssr: false });
-const CRTOverlay = dynamic(() => import("@/components/CRTOverlay"), { ssr: false });
-const MagneticCursor = dynamic(() => import("@/components/MagneticCursor"), { ssr: false });
-const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
-const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
-const Bio = dynamic(() => import("@/components/Bio"), { ssr: false });
-const Projects = dynamic(() => import("@/components/Projects"), { ssr: false });
-const Skills = dynamic(() => import("@/components/Skills"), { ssr: false });
-const Achievements = dynamic(() => import("@/components/Achievements"), { ssr: false });
-const Contact = dynamic(() => import("@/components/Contact"), { ssr: false });
-const TerminalLog = dynamic(() => import("@/components/TerminalLog"), { ssr: false });
-const SplineScene = dynamic(() => import("@/components/SplineScene"), { ssr: false });
-const ErrorBoundary = dynamic(() => import("@/components/ErrorBoundary"), { ssr: false });
-const HolographicEarth = dynamic(() => import("@/components/HolographicEarth"), { ssr: false });
-const GlitchOverlay = dynamic(() => import("@/components/GlitchOverlay"), { ssr: false });
-
-const SplineFallback = () => <HolographicEarth />;
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const [booted, setBooted] = useState(false);
-  const [showBoot, setShowBoot] = useState(true);
-  const splineRef = useRef<any>(null);
-  const splineContainerRef = useRef<HTMLDivElement>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [progress, setProgress] = useState(0);
   const lenisRef = useRef<Lenis | null>(null);
-
-  const handleBootComplete = useCallback(() => {
-    setBooted(true);
-    // Remove boot screen from DOM after fade
-    setTimeout(() => setShowBoot(false), 1000);
-
-    // Initial "GTA" Transition
-    if (splineRef.current) {
-      try {
-        splineRef.current.emitEvent('mouseHover', 'TerminalView');
-      } catch (e) {
-        console.warn("Spline state 'TerminalView' not found");
+  
+  // Custom preloader simulation since Spline onLoad doesn't give precise %
+  useEffect(() => {
+    let currentProgress = 0;
+    const interval = setInterval(() => {
+      currentProgress += Math.random() * 15;
+      if (currentProgress >= 100) {
+        currentProgress = 100;
+        clearInterval(interval);
+        setTimeout(() => setLoaded(true), 500);
       }
-    }
+      setProgress(currentProgress);
+    }, 200);
+    return () => clearInterval(interval);
   }, []);
 
-  // Initialize Lenis and GSAP ScrollTrigger
+  // Smooth Scroll & GSAP setup
   useEffect(() => {
-    if (!booted) return;
+    if (!loaded) return;
 
     // Smooth Scroll
     const lenis = new Lenis();
@@ -67,125 +43,121 @@ export default function Home() {
     }
     requestAnimationFrame(raf);
 
-    // Sync ScrollTrigger with Lenis
     lenis.on('scroll', ScrollTrigger.update);
 
-    // Camera & Container Scroll Animation (The "Moving Earth" effect)
-    if (splineContainerRef.current) {
-      // 1. Initial State: Hidden
-      gsap.set(splineContainerRef.current, { opacity: 0 });
+    // Hero Fade Out Animation
+    gsap.to(".hero-title", {
+      scrollTrigger: {
+        trigger: "#hero",
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+      opacity: 0,
+      y: -100,
+    });
 
-      // 2. Fade in after Hero section and keep visible
-      gsap.to(splineContainerRef.current, {
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "bottom center", // Start fading in as hero leaves
-          end: "bottom top",    // Fully visible when hero is gone
-          scrub: true,
-        },
-        opacity: 1,
-        ease: "power2.inOut"
-      });
-
-    }
+    // Horizontal Scroll for Portfolio
+    const panels = gsap.utils.toArray(".horizontal-panel");
+    gsap.to(panels, {
+      xPercent: -100 * (panels.length - 1),
+      ease: "none",
+      scrollTrigger: {
+        trigger: "#portfolio-container",
+        pin: true,
+        scrub: 1,
+        snap: 1 / (panels.length - 1),
+        end: () => "+=" + document.querySelector("#portfolio-container")?.offsetWidth
+      }
+    });
 
     return () => {
       lenis.destroy();
+      ScrollTrigger.getAll().forEach(t => t.kill());
     };
-  }, [booted]);
+  }, [loaded]);
 
-  // Prevent scroll during boot
-  useEffect(() => {
-    if (!booted) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [booted]);
-
-  const onSplineLoad = (spline: any) => {
-    splineRef.current = spline;
-    console.log("Spline Scene Loaded");
+  const onSplineLoad = (splineApp: any) => {
+    console.log("Spline loaded", splineApp);
+    // Ideally we would link GSAP to Spline camera here, but without knowing the exact object names
+    // in the Spline file (like 'Camera 2'), we rely on Spline's built-in interactivity for now.
   };
 
   return (
-    <main className="relative min-h-[100svh]">
-      {/* Glitch Overlay - Desktop Only */}
-      <div className="hidden md:block">
-        <GlitchOverlay />
+    <main className="relative bg-[#E3E3E3] text-[#111] overflow-hidden">
+      {/* Preloader */}
+      <div className={`preloader ${loaded ? 'fade-out' : ''}`}>
+        <h1 className="font-bold text-2xl tracking-widest uppercase">INITIALIZING NABOT</h1>
+        <div className="progress-container">
+          <div className="progress-bar" style={{ width: `${progress}%` }} />
+        </div>
       </div>
 
-      {/* 3D Background Layer */}
-      <div 
-        ref={splineContainerRef} 
-        style={{ opacity: 0, transform: 'translateY(0)' }} 
-        className="fixed inset-0 z-10 pointer-events-none flex items-center justify-center"
-      >
-        <ErrorBoundary fallback={<HolographicEarth />}>
-          <SplineScene onLoad={onSplineLoad} />
-        </ErrorBoundary>
+      {/* Fixed 3D Spline Background */}
+      <div className="spline-container">
+        <SplineScene onLoad={onSplineLoad} />
       </div>
 
-      {/* Background grid overlay */}
-      <div className="fixed inset-0 grid-bg opacity-30 pointer-events-none" style={{ zIndex: 11 }} />
+      {/* DOM Overlay Content */}
+      <div className="relative z-10 pointer-events-none">
+        
+        {/* Hero Section */}
+        <section id="hero" className="h-[100vh] flex flex-col items-center justify-center pointer-events-auto">
+          <h1 className="hero-title heading-massive text-center mix-blend-difference text-white">
+            NABOT
+          </h1>
+          <p className="hero-title mt-4 text-sm uppercase tracking-widest text-center mix-blend-difference text-white">
+            SCROLL TO EXPLORE
+          </p>
+        </section>
 
-      {/* Boot screen */}
-      {showBoot && <BootScreen onComplete={handleBootComplete} />}
+        {/* About Section */}
+        <section id="about" className="min-h-[100vh] flex items-center section-padding pointer-events-auto">
+          <div className="max-w-2xl bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl">
+            <h2 className="text-4xl font-bold mb-6 tracking-tight">About Me</h2>
+            <p className="text-lg leading-relaxed text-gray-700">
+              I am M. Abdullah. Exploring the intersection of AI Automation, Game Development, and Cyber Security. 
+              This digital space represents my transition from pure cyberpunk aesthetics to minimalist, functional 3D scrollytelling.
+            </p>
+          </div>
+        </section>
 
-      {/* CRT overlay - Desktop Only */}
-      <div className="hidden md:block">
-        <CRTOverlay />
+        {/* Portfolio Horizontal Scroll Section */}
+        <section id="portfolio-container" className="h-[100vh] pointer-events-auto overflow-hidden">
+          <div className="horizontal-scroll-container">
+            <div className="horizontal-panel">
+              <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl max-w-xl">
+                <h3 className="text-3xl font-bold mb-4">Project 01</h3>
+                <p>AI Automation Engine.</p>
+              </div>
+            </div>
+            <div className="horizontal-panel">
+              <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl max-w-xl">
+                <h3 className="text-3xl font-bold mb-4">Project 02</h3>
+                <p>Cyber Security Framework.</p>
+              </div>
+            </div>
+            <div className="horizontal-panel">
+              <div className="bg-white/80 backdrop-blur-md p-10 rounded-3xl shadow-xl max-w-xl">
+                <h3 className="text-3xl font-bold mb-4">Project 03</h3>
+                <p>Game Dev Physics Engine.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="h-[100vh] flex items-center justify-center section-padding pointer-events-auto">
+          <div className="text-center bg-white/80 backdrop-blur-md p-12 rounded-3xl shadow-xl max-w-xl">
+            <h2 className="text-5xl font-bold mb-6 tracking-tight">Let's Talk</h2>
+            <p className="text-gray-600 mb-8">Ready to build the future?</p>
+            <a href="mailto:abdullahismail249@yahoo.com" className="inline-block bg-black text-white px-8 py-4 rounded-full font-medium hover:scale-105 transition-transform">
+              abdullahismail249@yahoo.com
+            </a>
+          </div>
+        </section>
+
       </div>
-
-      {/* Custom cursor (desktop only) */}
-      <MagneticCursor />
-
-      {/* Navigation */}
-      {booted && <Navbar />}
-
-      {/* Content sections */}
-      <div className="relative chromatic-aberration" style={{ zIndex: "var(--z-ui)" }}>
-        <Hero isReady={booted} />
-
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="cyber-divider" />
-        </div>
-
-        <Bio />
-
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="cyber-divider" />
-        </div>
-
-        <Projects />
-
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="cyber-divider" />
-        </div>
-
-        <Skills />
-
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="cyber-divider" />
-        </div>
-
-        <Achievements />
-
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="cyber-divider" />
-        </div>
-
-        <Contact />
-
-        {/* Footer spacer for terminal log */}
-        <div className="h-16" />
-      </div>
-
-      {/* Terminal HUD footer */}
-      {booted && <TerminalLog />}
     </main>
   );
 }
