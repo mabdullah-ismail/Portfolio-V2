@@ -2,23 +2,26 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "M. ABDULLAH | Portfolio",
+  title: "GENO | M. ABDULLAH",
   description:
-    "An immersive cyberpunk 3D portfolio experience. Game Developer and Cybersecurity enthusiast terminal featuring interactive projects, skills, and achievements.",
+    "An immersive 3D portfolio experience featuring Robotic Precision and Minimalist Design. Cybersecurity enthusiast and Game Developer.",
+  icons: {
+    icon: "/icon.png",
+  },
   keywords: [
     "portfolio",
     "developer",
-    "cyberpunk",
+    "cybersecurity",
     "3D",
-    "full-stack",
-    "terminal",
-    "interactive",
+    "game dev",
+    "minimalist",
+    "geno",
   ],
   authors: [{ name: "M. ABDULLAH" }],
   openGraph: {
-    title: "M. ABDULLAH | Portfolio",
+    title: "GENO | M. ABDULLAH",
     description:
-      "An immersive cyberpunk 3D portfolio experience.",
+      "An immersive 3D portfolio experience featuring Robotic Precision and Minimalist Design.",
     type: "website",
   },
 };
