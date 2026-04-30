@@ -79,18 +79,18 @@ export default function Home() {
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    // Deep-Search for Spline Badge (including Shadow DOM)
+    // Ultra-Aggressive Spline Badge Nuke (Shadow DOM + Periodic Check)
     const nukeSpline = () => {
-      // 1. Check Light DOM
-      const lightBadges = document.querySelectorAll('a[href*="spline.design"], #spline-badge, .spline-watermark');
-      lightBadges.forEach(b => (b as HTMLElement).remove());
+      // 1. Light DOM check
+      const badges = document.querySelectorAll('a[href*="spline.design"], #spline-badge, .spline-watermark');
+      badges.forEach(b => (b as HTMLElement).remove());
 
-      // 2. Check Shadow DOMs
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach(el => {
-        if (el.shadowRoot) {
-          const shadowBadge = el.shadowRoot.querySelector('a[href*="spline.design"], #spline-badge');
-          if (shadowBadge) (shadowBadge as HTMLElement).remove();
+      // 2. Specific Shadow DOM search (spline-viewer and others)
+      const viewers = document.querySelectorAll('spline-viewer, div, section, main');
+      viewers.forEach(v => {
+        if (v.shadowRoot) {
+          const logo = v.shadowRoot.querySelector('#logo, a[href*="spline.design"], #spline-badge');
+          if (logo) (logo as HTMLElement).remove();
         }
       });
     };
