@@ -250,27 +250,6 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="mt-12 flex items-center gap-8">
-                <div className="flex gap-4">
-                  <button 
-                    onClick={() => handleNav('prev')}
-                    className="w-14 h-14 bg-white/40 backdrop-blur-md border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300"
-                    aria-label="Previous Project"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                  </button>
-                  <button 
-                    onClick={() => handleNav('next')}
-                    className="w-14 h-14 bg-white/40 backdrop-blur-md border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300"
-                    aria-label="Next Project"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                  </button>
-                </div>
-                <div className="font-display text-xs uppercase tracking-[0.3em] font-bold text-[#0A0A0A]">
-                  <span className="text-2xl">{currentProject + 1}</span> / {PROJECTS.length}
-                </div>
-              </div>
             </div>
 
             {/* Right side: Interactive Card Stack */}
