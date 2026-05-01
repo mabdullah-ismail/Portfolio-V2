@@ -281,7 +281,7 @@ export default function Home() {
                 height={450}
                 cardDistance={30}
                 verticalDistance={30}
-                delay={5000}
+                delay={3000}
                 pauseOnHover={true}
                 skewAmount={3}
                 onCardClick={(idx) => {

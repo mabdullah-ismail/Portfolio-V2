@@ -200,17 +200,21 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
     });
   };
 
+  const startInterval = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(swap, delay);
+  };
+
   const bringToFront = (idx: number) => {
     const pos = order.current.indexOf(idx);
-    if (pos === 0) return; // Already at front
+    if (pos === 0) return;
 
-    // Rotate the order array so that idx is at the front
     const newOrder = [...order.current.slice(pos), ...order.current.slice(0, pos)];
     order.current = newOrder;
     
-    // Animate all to their new slots
     animateToSlots();
     onSwap?.(newOrder[0]);
+    startInterval(); // Reset timer
   };
 
   const prev = () => {
@@ -222,11 +226,17 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
     
     animateToSlots();
     onSwap?.(newOrder[0]);
+    startInterval(); // Reset timer
+  };
+
+  const next = () => {
+    swap();
+    startInterval(); // Reset timer
   };
 
   useImperativeHandle(ref, () => ({
-    swap,
-    next: swap,
+    swap: next,
+    next,
     prev,
     bringToFront
   }));
@@ -239,7 +249,7 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
       }
     });
 
-    intervalRef.current = setInterval(swap, delay);
+    startInterval();
 
     if (pauseOnHover && container.current) {
       const node = container.current;
@@ -249,7 +259,7 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
       };
       const resume = () => {
         tlRef.current?.play();
-        intervalRef.current = setInterval(swap, delay);
+        startInterval();
       };
       node.addEventListener('mouseenter', pause);
       node.addEventListener('mouseleave', resume);
@@ -263,7 +273,7 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, refs, config.durDrop, config.durMove, config.durReturn, config.ease, config.promoteOverlap, config.returnDelay]);
+  }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing, refs]);
 
   const rendered = childArr.map((child, i) =>
     isValidElement<CardProps>(child)
