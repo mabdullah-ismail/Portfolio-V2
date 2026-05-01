@@ -117,6 +117,19 @@ export default function Home() {
       y: -100,
     });
 
+    // Spline Zoom & Movement Animation
+    gsap.to(".spline-container", {
+      scrollTrigger: {
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.5,
+      },
+      scale: 1.2,
+      y: 50,
+      ease: "power1.inOut",
+    });
+
     // Navigation Visibility for Work Section
     ScrollTrigger.create({
       trigger: "#experience",
