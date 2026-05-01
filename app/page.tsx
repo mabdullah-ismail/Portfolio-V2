@@ -280,7 +280,10 @@ export default function Home() {
                 delay={5000}
                 pauseOnHover={true}
                 skewAmount={3}
-                onCardClick={(idx) => setCurrentProject(idx)}
+                onCardClick={(idx) => {
+                  setCurrentProject(idx);
+                  cardSwapRef.current?.bringToFront(idx);
+                }}
                 onSwap={(idx) => setCurrentProject(idx)}
               >
                 {PROJECTS.map((project, index) => (
@@ -290,33 +293,26 @@ export default function Home() {
                     style={{ width: '100%', maxWidth: '400px' }}
                   >
                     <div className="relative h-full w-full bg-white">
-                      {/* Project Image */}
-                      <div className="absolute inset-0 overflow-hidden">
-                        <img 
-                          src={project.image} 
-                          alt={project.title} 
-                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-100"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent group-hover:from-black/60 group-hover:via-transparent group-hover:to-transparent transition-all duration-700" />
-                      </div>
-
                       {/* Card Content */}
-                      <div className="relative p-8 h-full flex flex-col justify-between z-10">
+                      <div className="relative p-8 md:p-12 h-full flex flex-col justify-between z-10">
                         <div className="flex justify-between items-start">
-                          <div className={`w-12 h-1 transition-colors duration-500 ${index === currentProject ? 'bg-black' : 'bg-black/10'} group-hover:bg-white/50`} />
-                          <div className="font-display text-[9px] font-bold text-[#aaa] group-hover:text-white/70 transition-colors">{String(index + 1).padStart(2, '0')}</div>
+                          <div className={`w-12 h-1 transition-colors duration-500 ${index === currentProject ? 'bg-black' : 'bg-black/10'}`} />
+                          <div className="font-display text-[10px] font-bold text-[#aaa]">{String(index + 1).padStart(2, '0')}</div>
                         </div>
-                        <div className="transition-transform duration-500 group-hover:-translate-y-2">
-                          <h4 className="font-display text-4xl font-bold mb-4 leading-none transition-colors group-hover:text-white">{project.title}</h4>
-                          <div className="flex flex-wrap gap-2 opacity-100 group-hover:opacity-0 transition-opacity duration-300">
-                            {project.tags.slice(0, 2).map((tag, i) => (
-                              <span key={i} className="text-[9px] uppercase tracking-tighter text-[#888]">{tag}</span>
+                        
+                        <div>
+                          <div className="font-display text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold mb-2">{project.role}</div>
+                          <h4 className="font-display text-4xl md:text-5xl font-bold mb-6 leading-[0.9] text-[#0A0A0A]">{project.title}</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {project.tags.map((tag, i) => (
+                              <span key={i} className="text-[9px] uppercase tracking-tighter text-[#888] border border-black/5 px-2 py-1">{tag}</span>
                             ))}
                           </div>
-                          {/* Reveal description on hover (optional, but makes it "change") */}
-                          <p className="text-[10px] text-white/70 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-500 absolute bottom-0 left-0">
-                            View Case Study
-                          </p>
+                        </div>
+
+                        <div className="pt-6 border-t border-black/5 flex items-center justify-between">
+                          <span className="text-[10px] uppercase tracking-widest text-[#aaa] font-bold">Details</span>
+                          <svg className="w-4 h-4 text-[#aaa]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                         </div>
                       </div>
                     </div>

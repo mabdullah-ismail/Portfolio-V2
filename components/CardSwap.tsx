@@ -117,6 +117,26 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const container = useRef<HTMLDivElement>(null);
 
+  const animateToSlots = () => {
+    refs.forEach((r, i) => {
+      const el = r.current;
+      if (!el) return;
+      // Find the position of this card in the current order
+      const pos = order.current.indexOf(i);
+      const slot = makeSlot(pos, cardDistance, verticalDistance, refs.length);
+      
+      gsap.to(el, {
+        x: slot.x,
+        y: slot.y,
+        z: slot.z,
+        duration: config.durMove,
+        ease: config.ease,
+        zIndex: slot.zIndex,
+        overwrite: true
+      });
+    });
+  };
+
   const swap = () => {
     if (order.current.length < 2) return;
     const [front, ...rest] = order.current;
@@ -180,9 +200,23 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
     });
   };
 
+  const bringToFront = (idx: number) => {
+    const pos = order.current.indexOf(idx);
+    if (pos === 0) return; // Already at front
+
+    // Rotate the order array so that idx is at the front
+    const newOrder = [...order.current.slice(pos), ...order.current.slice(0, pos)];
+    order.current = newOrder;
+    
+    // Animate all to their new slots
+    animateToSlots();
+    onSwap?.(newOrder[0]);
+  };
+
   useImperativeHandle(ref, () => ({
     swap,
-    next: swap
+    next: swap,
+    bringToFront
   }));
 
   useEffect(() => {
