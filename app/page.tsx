@@ -238,7 +238,11 @@ export default function Home() {
               
               <div 
                 className="glass-card p-8 md:p-12 relative overflow-hidden group border-black/5 cursor-pointer pointer-events-auto active:scale-[0.98] transition-transform"
-                onClick={() => cardSwapRef.current?.bringToFront(currentProject)}
+                onClick={() => {
+                  const nextIndex = (currentProject + 1) % PROJECTS.length;
+                  setCurrentProject(nextIndex);
+                  cardSwapRef.current?.bringToFront(nextIndex);
+                }}
               >
                 <div className="flex justify-between items-start mb-6">
                   <div className="font-display text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{PROJECTS[currentProject].role}</div>
@@ -268,8 +272,8 @@ export default function Home() {
 
             </div>
 
-            {/* Right side: Interactive Card Stack */}
-            <div className="w-full md:w-1/2 flex justify-center items-center h-[500px] pointer-events-auto">
+            {/* Right side: Interactive Card Stack (Hidden on Mobile) */}
+            <div className="hidden md:flex w-full md:w-1/2 justify-center items-center h-[500px] pointer-events-auto">
               <CardSwap
                 ref={cardSwapRef}
                 width="100%"
@@ -318,6 +322,13 @@ export default function Home() {
                   </Card>
                 ))}
               </CardSwap>
+            </div>
+
+            {/* Mobile Selection Info (Only on Mobile) */}
+            <div className="md:hidden w-full flex justify-center mt-8">
+              <div className="font-display text-[10px] uppercase tracking-[0.4em] text-[#888] animate-pulse">
+                Tap project card to cycle
+              </div>
             </div>
 
           </div>
