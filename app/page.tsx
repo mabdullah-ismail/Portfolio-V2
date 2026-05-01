@@ -151,7 +151,11 @@ export default function Home() {
 
   const handleNav = (direction: 'prev' | 'next') => {
     if (cardSwapRef.current) {
-      cardSwapRef.current.swap();
+      if (direction === 'next') {
+        cardSwapRef.current.next();
+      } else {
+        cardSwapRef.current.prev();
+      }
     }
   };
 

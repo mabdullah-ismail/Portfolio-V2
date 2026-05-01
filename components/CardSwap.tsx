@@ -213,9 +213,21 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
     onSwap?.(newOrder[0]);
   };
 
+  const prev = () => {
+    if (order.current.length < 2) return;
+    const last = order.current[order.current.length - 1];
+    const rest = order.current.slice(0, order.current.length - 1);
+    const newOrder = [last, ...rest];
+    order.current = newOrder;
+    
+    animateToSlots();
+    onSwap?.(newOrder[0]);
+  };
+
   useImperativeHandle(ref, () => ({
     swap,
     next: swap,
+    prev,
     bringToFront
   }));
 
