@@ -15,49 +15,56 @@ const PROJECTS = [
     role: "Founder / Startup",
     description: "Secured 4th Position at Shelby Stack. A sustainable tech solution focused on environmental impact and vision for green innovation.",
     tags: ["Sustainable Tech", "AI", "Startup"],
-    link: "https://ecoscan-pk.web.app"
+    link: "https://ecoscan-pk.web.app",
+    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=800"
   },
   {
     title: "Raise The Voice",
     role: "Unified Data Platform",
     description: "A community engagement initiative connecting Pakistan's law enforcement and judiciary for transparency and justice.",
     tags: ["Data Platform", "Social Impact", "DBMS"],
-    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/details/projects/"
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/details/projects/",
+    image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=800"
   },
   {
     title: "Arch Tech",
     role: "Cybersecurity / Intern",
     description: "Focusing on network security, vulnerability assessments, and Python-based automation scripts for digital defense.",
     tags: ["Python", "Kali Linux", "Security"],
-    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/"
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800"
   },
   {
     title: "GDGoC BNU",
     role: "Leadership / Google Dev",
     description: "Lead of Media & Coverage. Managing video production and social marketing for the Google Developer Groups community.",
     tags: ["Media", "Leadership", "Community"],
-    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/"
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/",
+    image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800"
   },
   {
     title: "OZI Publishing",
     role: "Game Dev / Intern",
     description: "Developed 3D simulations and Hyper-Casual Android games. Specialized in level design and Unity core logic.",
     tags: ["Unity", "C#", "Game Dev"],
-    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/"
+    link: "https://www.linkedin.com/in/muhammad-abdullah-ismail/",
+    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800"
   },
   {
     title: "SCIT Management",
     role: "Software Engineering",
     description: "A C++ & MySQL based University Management System streamlining academic operations through role-based access.",
     tags: ["C++", "MySQL", "OOP"],
-    link: "https://github.com/mabdullah-ismail"
+    link: "https://github.com/mabdullah-ismail",
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800"
   },
   {
     title: "ArcadeHub",
     role: "C++ Game Console",
     description: "Multi-game console featuring GeoGuesser, Problem Solver, and Hangman with dynamic leaderboards and file handling.",
     tags: ["C++", "Game Logic", "STL"],
-    link: "https://github.com/mabdullah-ismail/Arcade-Hub"
+    link: "https://github.com/mabdullah-ismail/Arcade-Hub",
+    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800"
   }
 ];
 
@@ -144,11 +151,7 @@ export default function Home() {
 
   const handleNav = (direction: 'prev' | 'next') => {
     if (cardSwapRef.current) {
-      if (direction === 'next') {
-        cardSwapRef.current.next();
-      } else {
-        cardSwapRef.current.prev();
-      }
+      cardSwapRef.current.swap();
     }
   };
 
@@ -283,23 +286,37 @@ export default function Home() {
                 {PROJECTS.map((project, index) => (
                   <Card 
                     key={index} 
-                    className={`overflow-hidden border-none shadow-2xl transition-all duration-500 ${index === currentProject ? 'ring-2 ring-black/5' : ''}`}
+                    className={`overflow-hidden border-none shadow-2xl transition-all duration-700 group cursor-pointer ${index === currentProject ? 'ring-2 ring-black/10' : ''}`}
                     style={{ width: '100%', maxWidth: '400px' }}
                   >
                     <div className="relative h-full w-full bg-white">
-                      <div className="absolute inset-0 bg-[#0A0A0A]/5 group-hover:bg-transparent transition-colors" />
-                      <div className="p-8 h-full flex flex-col justify-between">
+                      {/* Project Image */}
+                      <div className="absolute inset-0 overflow-hidden">
+                        <img 
+                          src={project.image} 
+                          alt={project.title} 
+                          className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-40 group-hover:opacity-100"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent group-hover:from-black/60 group-hover:via-transparent group-hover:to-transparent transition-all duration-700" />
+                      </div>
+
+                      {/* Card Content */}
+                      <div className="relative p-8 h-full flex flex-col justify-between z-10">
                         <div className="flex justify-between items-start">
-                          <div className="w-12 h-1 bg-black/10" />
-                          <div className="font-display text-[9px] font-bold text-[#aaa]">{String(index + 1).padStart(2, '0')}</div>
+                          <div className={`w-12 h-1 transition-colors duration-500 ${index === currentProject ? 'bg-black' : 'bg-black/10'} group-hover:bg-white/50`} />
+                          <div className="font-display text-[9px] font-bold text-[#aaa] group-hover:text-white/70 transition-colors">{String(index + 1).padStart(2, '0')}</div>
                         </div>
-                        <div>
-                          <h4 className="font-display text-4xl font-bold mb-4 leading-none">{project.title}</h4>
-                          <div className="flex flex-wrap gap-2">
+                        <div className="transition-transform duration-500 group-hover:-translate-y-2">
+                          <h4 className="font-display text-4xl font-bold mb-4 leading-none transition-colors group-hover:text-white">{project.title}</h4>
+                          <div className="flex flex-wrap gap-2 opacity-100 group-hover:opacity-0 transition-opacity duration-300">
                             {project.tags.slice(0, 2).map((tag, i) => (
                               <span key={i} className="text-[9px] uppercase tracking-tighter text-[#888]">{tag}</span>
                             ))}
                           </div>
+                          {/* Reveal description on hover (optional, but makes it "change") */}
+                          <p className="text-[10px] text-white/70 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-500 absolute bottom-0 left-0">
+                            View Case Study
+                          </p>
                         </div>
                       </div>
                     </div>
