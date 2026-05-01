@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import SplineScene from "@/components/SplineScene";
+import CardSwap, { Card } from "@/components/CardSwap";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -62,7 +63,7 @@ const PROJECTS = [
 
 export default function Home() {
   const lenisRef = useRef<Lenis | null>(null);
-  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
+  const cardSwapRef = useRef<any>(null);
   const [currentProject, setCurrentProject] = useState(0);
   const [isNavVisible, setIsNavVisible] = useState(false);
   
@@ -109,32 +110,15 @@ export default function Home() {
       y: -100,
     });
 
-    // Horizontal Scroll for Portfolio (Experience)
-    const container = document.querySelector(".horizontal-scroll-container") as HTMLElement;
-    
-    if (container) {
-      const scrollTween = gsap.to(container, {
-        x: () => -(container.scrollWidth - window.innerWidth),
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#experience",
-          pin: true,
-          scrub: 1,
-          start: "top top",
-          end: () => "+=" + container.scrollWidth,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            const progress = self.progress;
-            const index = Math.round(progress * (PROJECTS.length - 1));
-            setCurrentProject(index);
-          },
-          onToggle: (self) => {
-            setIsNavVisible(self.isActive);
-          }
-        }
-      });
-      scrollTriggerRef.current = scrollTween.scrollTrigger!;
-    }
+    // Navigation Visibility for Work Section
+    ScrollTrigger.create({
+      trigger: "#experience",
+      start: "top center",
+      end: "bottom center",
+      onToggle: (self) => {
+        setIsNavVisible(self.isActive);
+      }
+    });
 
     // Reveal animations for text
     gsap.utils.toArray(".reveal-text").forEach((text: any) => {
@@ -159,24 +143,9 @@ export default function Home() {
   }, []);
 
   const handleNav = (direction: 'prev' | 'next') => {
-    if (!lenisRef.current || !scrollTriggerRef.current) return;
-    
-    const nextIndex = direction === 'next' 
-      ? Math.min(currentProject + 1, PROJECTS.length - 1)
-      : Math.max(currentProject - 1, 0);
-    
-    const st = scrollTriggerRef.current;
-    const start = st.start;
-    const end = st.end;
-    const totalScroll = end - start;
-    
-    const targetProgress = nextIndex / (PROJECTS.length - 1);
-    const targetScroll = start + (targetProgress * totalScroll);
-    
-    lenisRef.current.scrollTo(targetScroll, { 
-      duration: 1,
-      easing: (t) => t === 1 ? 1 : 1 - Math.pow(2, -10 * t) // Expo Out
-    });
+    if (cardSwapRef.current) {
+      cardSwapRef.current.swap();
+    }
   };
 
   return (
@@ -234,39 +203,107 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Projects Horizontal Scroll Section */}
-        <section id="experience" className="h-[100vh] pointer-events-auto overflow-hidden">
-          <div className="horizontal-scroll-container flex gap-8 md:gap-16 px-[10vw] md:px-[20vw] items-center h-full w-max opacity-100">
-            {PROJECTS.map((project, index) => (
-              <div 
-                key={index}
-                className="horizontal-panel flex-shrink-0 w-[80vw] md:w-[40vw] group"
-              >
-                <div className="glass-card p-6 md:p-12 rounded-none border border-transparent group-hover:border-[#0A0A0A] transition-all duration-500 hover:bg-white/95 shadow-sm group-hover:shadow-xl min-h-[350px] md:min-h-0">
-                  <div className="flex justify-between items-start mb-4 md:mb-6">
-                    <div className="font-display text-[8px] md:text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{project.role}</div>
-                    <a 
-                      href={project.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="p-2 bg-black text-white hover:bg-[#333] transition-colors rounded-none pointer-events-auto"
-                      title="View Project"
-                    >
-                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                    </a>
-                  </div>
-                  <h3 className="font-display text-2xl md:text-4xl font-bold mb-4 text-[#0A0A0A] leading-tight">{project.title}</h3>
-                  <p className="text-sm md:text-base text-[#484848] mb-6 md:mb-8 leading-relaxed font-light line-clamp-4 md:line-clamp-none">{project.description}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.map((tag, i) => (
-                      <span key={i} className="px-2 py-1 border border-[#ddd] text-[8px] md:text-[9px] uppercase tracking-[0.1em] text-[#888] font-display font-medium">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+        {/* Projects Stack Section */}
+        <section id="experience" className="min-h-[100vh] flex flex-col items-center justify-center section-padding pointer-events-auto overflow-hidden">
+          <div className="max-w-7xl w-full flex flex-col md:flex-row items-center gap-16 md:gap-24">
+            
+            {/* Left side: Project Info */}
+            <div className="w-full md:w-1/2 reveal-text">
+              <div className="font-display text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold mb-4">Portfolio</div>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-8 text-[#0A0A0A] leading-[0.9]">SELECTED WORK.</h2>
+              
+              <div className="glass-card p-8 md:p-12 relative overflow-hidden group border-black/5">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="font-display text-[10px] text-[#888] uppercase tracking-[0.3em] font-bold">{PROJECTS[currentProject].role}</div>
+                  <a 
+                    href={PROJECTS[currentProject].link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-3 bg-black text-white hover:bg-[#333] transition-colors pointer-events-auto"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                  </a>
+                </div>
+                <h3 className="font-display text-3xl md:text-5xl font-bold mb-6 text-[#0A0A0A] transition-all duration-500">
+                  {PROJECTS[currentProject].title}
+                </h3>
+                <p className="text-lg text-[#484848] mb-10 leading-relaxed font-light transition-all duration-500">
+                  {PROJECTS[currentProject].description}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {PROJECTS[currentProject].tags.map((tag, i) => (
+                    <span key={i} className="px-3 py-1.5 border border-black/10 text-[10px] uppercase tracking-[0.1em] text-[#666] font-display font-medium">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
-            ))}
+
+              <div className="mt-12 flex items-center gap-8">
+                <div className="flex gap-4">
+                  <button 
+                    onClick={() => handleNav('prev')}
+                    className="w-14 h-14 bg-white/40 backdrop-blur-md border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300"
+                    aria-label="Previous Project"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                  </button>
+                  <button 
+                    onClick={() => handleNav('next')}
+                    className="w-14 h-14 bg-white/40 backdrop-blur-md border border-black/5 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300"
+                    aria-label="Next Project"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                </div>
+                <div className="font-display text-xs uppercase tracking-[0.3em] font-bold text-[#0A0A0A]">
+                  <span className="text-2xl">{currentProject + 1}</span> / {PROJECTS.length}
+                </div>
+              </div>
+            </div>
+
+            {/* Right side: Interactive Card Stack */}
+            <div className="w-full md:w-1/2 flex justify-center items-center h-[500px]">
+              <CardSwap
+                ref={cardSwapRef}
+                width="100%"
+                height={450}
+                cardDistance={30}
+                verticalDistance={30}
+                delay={5000}
+                pauseOnHover={true}
+                skewAmount={3}
+                onCardClick={(idx) => setCurrentProject(idx)}
+                onSwap={(idx) => setCurrentProject(idx)}
+              >
+                {PROJECTS.map((project, index) => (
+                  <Card 
+                    key={index} 
+                    className={`overflow-hidden border-none shadow-2xl transition-all duration-500 ${index === currentProject ? 'ring-2 ring-black/5' : ''}`}
+                    style={{ width: '100%', maxWidth: '400px' }}
+                  >
+                    <div className="relative h-full w-full bg-white">
+                      <div className="absolute inset-0 bg-[#0A0A0A]/5 group-hover:bg-transparent transition-colors" />
+                      <div className="p-8 h-full flex flex-col justify-between">
+                        <div className="flex justify-between items-start">
+                          <div className="w-12 h-1 bg-black/10" />
+                          <div className="font-display text-[9px] font-bold text-[#aaa]">{String(index + 1).padStart(2, '0')}</div>
+                        </div>
+                        <div>
+                          <h4 className="font-display text-4xl font-bold mb-4 leading-none">{project.title}</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {project.tags.slice(0, 2).map((tag, i) => (
+                              <span key={i} className="text-[9px] uppercase tracking-tighter text-[#888]">{tag}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </CardSwap>
+            </div>
+
           </div>
         </section>
 
@@ -295,26 +332,6 @@ export default function Home() {
 
       </div>
 
-      {/* Bottom Navigation Arrows */}
-      <div className={`fixed bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 md:gap-6 z-[100] transition-all duration-500 pointer-events-auto ${isNavVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
-        <button 
-          onClick={() => handleNav('prev')}
-          className="w-10 h-10 md:w-12 md:h-12 bg-white/40 backdrop-blur-2xl border border-white/50 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl active:scale-95"
-          aria-label="Previous Project"
-        >
-          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-        </button>
-        <div className="font-display text-[9px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#0A0A0A] bg-white/20 backdrop-blur-md px-3 py-1">
-          {currentProject + 1} / {PROJECTS.length}
-        </div>
-        <button 
-          onClick={() => handleNav('next')}
-          className="w-10 h-10 md:w-12 md:h-12 bg-white/40 backdrop-blur-2xl border border-white/50 flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 shadow-2xl active:scale-95"
-          aria-label="Next Project"
-        >
-          <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-        </button>
-      </div>
     </main>
   );
 }
