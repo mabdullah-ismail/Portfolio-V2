@@ -115,14 +115,28 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const container = useRef<HTMLDivElement>(null);
+  const isAnimating = useRef(false);
 
-  const swap = () => {
-    if (order.current.length < 2) return;
+  const next = () => {
+    if (order.current.length < 2 || isAnimating.current) return;
+    isAnimating.current = true;
+
     const [front, ...rest] = order.current;
     const elFront = refs[front].current;
-    if (!elFront) return;
+    if (!elFront) {
+      isAnimating.current = false;
+      return;
+    }
 
-    const tl = gsap.timeline();
+    // Trigger state update immediately for UI responsiveness
+    onSwap?.(rest[0]);
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        order.current = [...rest, front];
+        isAnimating.current = false;
+      }
+    });
     tlRef.current = tl;
 
     tl.to(elFront, {
@@ -152,13 +166,7 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
 
     const backSlot = makeSlot(refs.length - 1, cardDistance, verticalDistance, refs.length);
     tl.addLabel('return', `promote+=${config.durMove * config.returnDelay}`);
-    tl.call(
-      () => {
-        gsap.set(elFront, { zIndex: backSlot.zIndex });
-      },
-      undefined,
-      'return'
-    );
+    tl.call(() => gsap.set(elFront, { zIndex: backSlot.zIndex }), undefined, 'return');
 
     tl.to(
       elFront,
@@ -171,17 +179,68 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
       },
       'return'
     );
+  };
 
-    tl.call(() => {
-      const nextOrder = [...rest, front];
-      order.current = nextOrder;
-      onSwap?.(nextOrder[0]);
+  const prev = () => {
+    if (order.current.length < 2 || isAnimating.current) return;
+    isAnimating.current = true;
+
+    const backIdx = order.current[order.current.length - 1];
+    const rest = order.current.slice(0, -1);
+    const elBack = refs[backIdx].current;
+    if (!elBack) {
+      isAnimating.current = false;
+      return;
+    }
+
+    // Trigger state update immediately
+    onSwap?.(backIdx);
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        order.current = [backIdx, ...rest];
+        isAnimating.current = false;
+      }
+    });
+    tlRef.current = tl;
+
+    // Move back card out of sight first
+    tl.set(elBack, { zIndex: refs.length + 1 });
+    tl.fromTo(elBack, 
+      { y: '+=500' },
+      {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: config.durDrop,
+        ease: config.ease
+      }
+    );
+
+    tl.addLabel('demote', `-=${config.durDrop * config.promoteOverlap}`);
+    rest.forEach((idx, i) => {
+      const el = refs[idx].current;
+      if (!el) return;
+      const slot = makeSlot(i + 1, cardDistance, verticalDistance, refs.length);
+      tl.to(
+        el,
+        {
+          x: slot.x,
+          y: slot.y,
+          z: slot.z,
+          duration: config.durMove,
+          ease: config.ease,
+          onStart: () => gsap.set(el, { zIndex: slot.zIndex })
+        },
+        `demote+=${i * 0.1} `
+      );
     });
   };
 
   useImperativeHandle(ref, () => ({
-    swap,
-    next: swap
+    next,
+    prev,
+    swap: next
   }));
 
   useEffect(() => {
@@ -192,17 +251,16 @@ export const CardSwap = forwardRef<any, CardSwapProps>(({
       }
     });
 
-    intervalRef.current = setInterval(swap, delay);
+    intervalRef.current = setInterval(next, delay);
 
     if (pauseOnHover && container.current) {
       const node = container.current;
       const pause = () => {
-        tlRef.current?.pause();
         if (intervalRef.current) clearInterval(intervalRef.current);
       };
       const resume = () => {
-        tlRef.current?.play();
-        intervalRef.current = setInterval(swap, delay);
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(next, delay);
       };
       node.addEventListener('mouseenter', pause);
       node.addEventListener('mouseleave', resume);
